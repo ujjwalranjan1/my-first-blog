@@ -77,3 +77,7 @@ def __str__(self):
 
 //The last step here is to add our new model to our database.
 (myvenv) ~/djangogirls$ python manage.py makemigrations blog
+//Django prepared a migration file for us that we now have to apply to our database.
+(myvenv) ~/djangogirls$ python manage.py migrate blog
+
+//To add, edit and delete the posts we've just modeled, we will use Django admin.
