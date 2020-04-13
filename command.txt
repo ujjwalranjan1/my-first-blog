@@ -1,0 +1,79 @@
+//make file
+$ mkdir djangogirls
+$ cd djangogirls
+//virtual environment name-myvenv
+$ python3 -m venv myvenv
+//activate myvenv
+source myvenv/bin/activate
+          or
+ . myvenv/bin/activate
+ //upgrade pip
+ python -m pip install --upgrade pip
+ //First create a requirements.txt file inside of the djangogirls/ folder,
+ //In your djangogirls/requirements.txt
+ Django~=2.2.4
+ //install django
+pip install -r requirements.txt
+//create project -this will add manage.py and mysite
+//django-admin.py is a script that will create the directories and files for you
+django-admin startproject mysite .
+//manage.py is a script that helps with management of the site
+//settings.py file contains the configuration of your website
+
+//change settings
+TIME_ZONE = 'Asia/Kolkata'
+//Go down to the end of the file, and just underneath the STATIC_URL entry, add a new one called STATIC_ROOT:
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
+//To create a database for our blog,
+(myvenv) ~/djangogirls$ python manage.py migrate
+// we can start the web server
+(myvenv) ~/djangogirls$ python manage.py runserver
+//Open your browser
+http://127.0.0.1:8000/
+//open second terminal //activate myvenv
+source myvenv/bin/activate
+          or
+ . myvenv/bin/activate
+// To stop the web server, switch back to the window in which it's running and press CTRL+C
+//django models-A model in Django is a special kind of object – it is saved in the database..SQLite database to store our data.
+//To keep everything tidy, we will create a separate application inside our project
+(myvenv) ~/djangogirls$ python manage.py startapp blog
+
+ //create folder named blog
+
+//We do that in the file mysite/settings.py
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'blog.apps.BlogConfig',//this line added
+]
+//blog/models.py -delete everything write this code
+*****************************************
+from django.conf import settings
+from django.db import models
+from django.utils import timezone
+
+
+class Post(models.Model):    //class with name post created//models.Model means that the Post is a Django Model
+author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) //link to another model
+title = models.CharField(max_length=200) //title is of limited number of char
+text = models.TextField()  //text without limit
+created_date = models.DateTimeField(default=timezone.now) //time date format
+published_date = models.DateTimeField(blank=True, null=True)
+
+def publish(self):
+    self.published_date = timezone.now()
+    self.save()
+
+def __str__(self):
+    return self.title
+*********************************************
+
+//The last step here is to add our new model to our database.
+(myvenv) ~/djangogirls$ python manage.py makemigrations blog
